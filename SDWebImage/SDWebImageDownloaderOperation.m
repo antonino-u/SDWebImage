@@ -359,6 +359,10 @@
             completionBlock(nil, nil, nil, YES);
         }
         else {
+            if (self.imageData == nil) {
+                [self done];
+                return;
+            }
             UIImage *image = [UIImage sd_imageWithData:self.imageData];
             NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:self.request.URL];
             image = [self scaledImageForKey:key image:image];
