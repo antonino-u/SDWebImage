@@ -358,11 +358,7 @@
         if (self.options & SDWebImageDownloaderIgnoreCachedResponse && responseFromCached) {
             completionBlock(nil, nil, nil, YES);
         }
-        else {
-            if (self.imageData == nil) {
-                [self done];
-                return;
-            }
+        else if (self.imageData != nil) {
             UIImage *image = [UIImage sd_imageWithData:self.imageData];
             NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:self.request.URL];
             image = [self scaledImageForKey:key image:image];
@@ -377,6 +373,9 @@
             else {
                 completionBlock(image, self.imageData, nil, YES);
             }
+        }
+        else {
+            completionBlock(nil, nil, [NSError errorWithDomain:@"SDWebImageErrorDomain" code:0 userInfo:@{NSLocalizedDescriptionKey : @"Image unable to download. Possible due to memory constraints or speed issues, like scrolling a UITableView too quickly."}], YES);
         }
     }
     self.completionBlock = nil;
